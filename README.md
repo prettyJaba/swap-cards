@@ -2,12 +2,12 @@
 Веб-приложение для обмена пользовательскими карточками.
 
 ## Технологии
-Java
-Thymeleaf
-PostgreSQL
-JWT
-Docker
-GitHub
+Java  
+Thymeleaf  
+PostgreSQL  
+JWT  
+Docker  
+GitHub  
 
 ## Функции
 - Регистрация и авторизация
