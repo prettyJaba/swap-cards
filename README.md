@@ -2,12 +2,14 @@
 Веб-приложение для обмена пользовательскими карточками.
 
 ## Технологии
+GitHub  
+UML (Miro)  
+PostgreSQL  
+OpenAPI/Swagger  
 Java  
 Thymeleaf  
-PostgreSQL  
 JWT  
 Docker  
-GitHub  
 
 ## Функции
 - Регистрация и авторизация
