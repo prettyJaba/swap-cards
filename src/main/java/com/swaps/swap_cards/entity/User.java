@@ -1,4 +1,8 @@
+package com.swaps.swap_cards.entity;
+
+import com.swaps.swap_cards.util.PasswordUtil;
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "users")
@@ -31,5 +35,7 @@ public class User implements Serializable {
     public void setUserName(String userName) { this.userName = userName; }
     public void setLinkToUserPic(String linkToUserPic) { this.linkToUserPic = linkToUserPic; }
     public void setEmail(String email) { this.email = email; }
-    public void setPassword(String password) { this.password = password; }
+    public void setPassword(String rawPassword) {
+        this.password = PasswordUtil.hashPassword(rawPassword);
+    }
 }

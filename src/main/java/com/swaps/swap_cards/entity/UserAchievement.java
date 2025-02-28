@@ -1,4 +1,7 @@
+package com.swaps.swap_cards.entity;
+
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "user_achievements")
