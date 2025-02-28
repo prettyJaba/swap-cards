@@ -41,4 +41,5 @@ public class SwapCard implements Serializable {
     public void setLinkToImage(String linkToImage) { this.linkToImage = linkToImage; }
     public void setDescription(String description) { this.description = description; }
     public void setOwner(User owner) { this.owner = owner; }
+    public void setCreator(User creator) { this.creator = creator; }
 }
