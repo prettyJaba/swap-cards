@@ -13,13 +13,21 @@ public class UserAchievement implements Serializable {
     @Column(name = "date_earned", nullable = false)
     private LocalDate dateEarned;
 
-    public UserAchievement() { }
+    public UserAchievement() {
+        this.id = new UserAchievementId();
+    }
 
     public UserAchievementId getId() { return id; }
     public LocalDate getDateEarned() { return dateEarned; }
 
-    public void setUser(User user) { this.id.user = user; }
-    public void setAchievement(Achievement achievement) { this.id.achievement = achievement; }
+    public void setUser(User user) {
+        if (this.id == null) this.id = new UserAchievementId();
+        this.id.user = user;
+    }
+    public void setAchievement(Achievement achievement) {
+        if (this.id == null) this.id = new UserAchievementId();
+        this.id.achievement = achievement;
+    }
     public void setDateEarned(LocalDate dateEarned) { this.dateEarned = dateEarned; }
 
     @Embeddable

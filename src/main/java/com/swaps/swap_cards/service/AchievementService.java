@@ -5,6 +5,7 @@ import com.swaps.swap_cards.entity.UserAchievement;
 import com.swaps.swap_cards.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,10 +16,12 @@ public class AchievementService {
     @PersistenceContext
     private EntityManager entityManager;
 
-
+    public Achievement getAchievementById(Integer id) {
+        return entityManager.find(Achievement.class, id);
+    }
 
     public List<Achievement> getAchievementsForUser(Integer userId) {
-        String query = "SELECT ua.achievement FROM UserAchievement ua WHERE ua.user.id = :userId";
+        String query = "SELECT ua.id.achievement FROM UserAchievement ua WHERE ua.id.user.id = :userId";
         return entityManager.createQuery(query, Achievement.class)
                 .setParameter("userId", userId)
                 .getResultList();
@@ -41,7 +44,7 @@ public class AchievementService {
                 .getSingleResult();
 
         Long achievementCount = entityManager.createQuery(
-                        "SELECT COUNT(ua) FROM UserAchievement ua WHERE ua.user.id = :userId", Long.class)
+                        "SELECT COUNT(ua) FROM UserAchievement ua WHERE ua.id.user.id = :userId", Long.class)
                 .setParameter("userId", user.getId())
                 .getSingleResult();
 
@@ -66,10 +69,11 @@ public class AchievementService {
         };
     }
 
+    @Transactional
     public void grantAchievementToUser(User user, Achievement achievement) {
         if (checkAchievementCondition(user, achievement)) {
             UserAchievement userAchievement = entityManager.createQuery(
-                            "SELECT ua FROM UserAchievement ua WHERE ua.user.id = :userId AND ua.achievement.id = :achievementId", UserAchievement.class)
+                            "SELECT ua FROM UserAchievement ua WHERE ua.id.user.id = :userId AND ua.id.achievement.id = :achievementId", UserAchievement.class)
                     .setParameter("userId", user.getId())
                     .setParameter("achievementId", achievement.getId())
                     .getResultList()

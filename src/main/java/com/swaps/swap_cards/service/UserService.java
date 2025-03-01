@@ -1,9 +1,11 @@
 package com.swaps.swap_cards.service;
 
+import com.swaps.swap_cards.entity.Achievement;
 import com.swaps.swap_cards.entity.SwapCard;
 import com.swaps.swap_cards.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,7 @@ public class UserService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     public User createUser(String userName, String email, String password) {
         User user = new User();
         user.setUserName(userName);
@@ -45,6 +48,7 @@ public class UserService {
                 .getResultList();
     }
 
+    @Transactional
     public void updateUserPic(Integer userId, String newPicUrl) {
         User user = entityManager.find(User.class, userId);
         if (user != null) {
@@ -52,6 +56,7 @@ public class UserService {
             entityManager.merge(user);
         }
     }
+    @Transactional
     public void deleteUserPic(Integer userId) {
         User user = entityManager.find(User.class, userId);
         if (user != null) {
@@ -60,5 +65,11 @@ public class UserService {
         }
     }
 
+    public List<Achievement> getAchievements(Integer userId) {
+        String query = "SELECT ua.id.achievement FROM UserAchievement ua WHERE ua.id.user.id = :userId";
+        return entityManager.createQuery(query, Achievement.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
 
 }
