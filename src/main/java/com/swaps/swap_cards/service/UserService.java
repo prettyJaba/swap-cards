@@ -24,7 +24,6 @@ public class UserService {
         entityManager.persist(user);
         return user;
     }
-
     public List<User> getAllUsers() {
         String query = "SELECT u FROM User u";
         return entityManager.createQuery(query, User.class).getResultList();
@@ -49,12 +48,13 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserPic(Integer userId, String newPicUrl) {
+    public User updateUserPic(Integer userId, String newPicUrl) {
         User user = entityManager.find(User.class, userId);
         if (user != null) {
             user.setLinkToUserPic(newPicUrl);
             entityManager.merge(user);
         }
+        return user;
     }
     @Transactional
     public void deleteUserPic(Integer userId) {

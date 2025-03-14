@@ -30,15 +30,15 @@ public class DatabaseFillTest {
     @Test
     public void testFillDatabase() {
         // Создание пользователей
-        User user1 = userService.createUser("Anya", "anya@example.com", "123");
-        User user2 = userService.createUser("Vova", "vova@example.com", "123");
-        User user3 = userService.createUser("Ilya", "ilya@example.com", "123");
+        User user1 = userService.createUser("Anya", "1anya@example.com", "123");
+        User user2 = userService.createUser("Vova", "1vova@example.com", "123");
+        User user3 = userService.createUser("Ilya", "1ilya@example.com", "123");
 
         // Создание карточек
-        SwapCard card1 = swapCardService.createSwapCard("anya", "0", "annoying little girl", user1);
-        SwapCard card2 = swapCardService.createSwapCard("vova", "0", "annoying boy", user2);
-        SwapCard card3 = swapCardService.createSwapCard("ilya", "0", "annoying boy 2", user3);
-        SwapCard card4 = swapCardService.createSwapCard("dog", "0", "very loud dog", user2);
+        SwapCard card1 = swapCardService.createSwapCard("1anya", "0", "annoying little girl", user1);
+        SwapCard card2 = swapCardService.createSwapCard("1vova", "0", "annoying boy", user2);
+        SwapCard card3 = swapCardService.createSwapCard("1ilya", "0", "annoying boy 2", user3);
+        SwapCard card4 = swapCardService.createSwapCard("1dog", "0", "very loud dog", user2);
 
         assertNotNull(user1.getId());
         assertNotNull(user2.getId());

@@ -27,21 +27,25 @@ public class SwapCardService {
     }
 
     @Transactional
-    public void transferCard(Integer cardId, User currentOwner, User newOwner) {
+    public void transferCard(Integer cardId, Integer currentOwnerId, Integer newOwnerId) {
         SwapCard card = entityManager.find(SwapCard.class, cardId);
+        User currentOwner = entityManager.find(User.class, currentOwnerId);
+        User newOwner = entityManager.find(User.class, newOwnerId);
 
-        if (card != null) {
-            if (card.getOwner().equals(currentOwner)) {
-                card.setOwner(newOwner);
-                entityManager.merge(card);
-            } else {
-                throw new IllegalArgumentException("You are not the owner of this card");
-            }
-
-        } else {
+        if (card == null) {
             throw new IllegalArgumentException("Card not found");
         }
+        if (currentOwner == null || newOwner == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        if (!card.getOwner().equals(currentOwner)) {
+            throw new IllegalArgumentException("You are not the owner of this card");
+        }
+
+        card.setOwner(newOwner);
+        entityManager.merge(card);
     }
+
 
     public List<SwapCard> getAllCards() {
         String query = "SELECT c FROM SwapCard c";

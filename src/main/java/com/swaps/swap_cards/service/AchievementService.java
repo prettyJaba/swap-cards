@@ -16,6 +16,11 @@ public class AchievementService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public List<Achievement> getAllAchievements() {
+        String query = "SELECT a FROM Achievement a";
+        return entityManager.createQuery(query, Achievement.class).getResultList();
+    }
+
     public Achievement getAchievementById(Integer id) {
         return entityManager.find(Achievement.class, id);
     }

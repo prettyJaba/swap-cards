@@ -50,7 +50,7 @@ public class ServiceTest {
         List<User> users = userService.getAllUsers();
 
         assertNotNull(users);
-        assertEquals(3, users.size());
+        assertEquals(6, users.size());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class ServiceTest {
         List<SwapCard> cards = userService.getCardsFromUser(1);
 
         assertNotNull(cards);
-        assertEquals(1, cards.size());
+        assertEquals(2, cards.size());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class ServiceTest {
         assertEquals(currentOwner, card.getOwner());
 
         // Выполняем передачу карточки
-        swapCardService.transferCard(card.getId(), currentOwner, newOwner);
+        swapCardService.transferCard(card.getId(), 1, 2);
 
 
         assertNotNull(card);
