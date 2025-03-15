@@ -21,11 +21,6 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestParam String userName,@RequestParam String email,@RequestParam String password) {
-        return ResponseEntity.ok(userService.createUser(userName, email, password));
-    }
-
-    @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.createUser(
                 user.getUserName(),
@@ -41,7 +36,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        User user = userService.getUserById(id);
+        return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/search")
@@ -51,33 +47,35 @@ public class UserController {
 
     @GetMapping("/{id}/cards")
     public ResponseEntity<List<SwapCard>> getCardsFromUser(@PathVariable Integer id) {
-        return ResponseEntity.ok(userService.getCardsFromUser(id));
+        User user = userService.getUserById(id);
+        return user != null ? ResponseEntity.ok(userService.getCardsFromUser(id)) : ResponseEntity.notFound().build();
     }
 
     @PatchMapping("/{id}/update-pic")
     public ResponseEntity<User> updateUserPic(@PathVariable Integer id, @RequestParam String newPic) {
-        return ResponseEntity.ok(userService.updateUserPic(id, newPic));
+        User user = userService.getUserById(id);
+        return user != null ? ResponseEntity.ok(userService.updateUserPic(id, newPic)) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}/delete-pic")
     public ResponseEntity<Void> deleteUserPic(@PathVariable Integer id) {
-        userService.deleteUserPic(id);
-        return ResponseEntity.noContent().build();
+        User user = userService.getUserById(id);
+        if (user != null) {
+            userService.deleteUserPic(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}/achievements")
     public ResponseEntity<List<Achievement>> getAchievements(@PathVariable Integer id) {
-        return ResponseEntity.ok(userService.getAchievements(id));
+        User user = userService.getUserById(id);
+        return user != null ? ResponseEntity.ok(userService.getAchievements(id)) : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/{id}/achievements")
-    public ResponseEntity<List<Achievement>> getAchievementsForUser(@PathVariable Integer id) {
-        return ResponseEntity.ok(achievementService.getAchievementsForUser(id));
-    }
-
-    @PostMapping("/{userId}/achievements/{achievementId}")
-    public ResponseEntity<String> grantAchievementToUser(@PathVariable Integer userId, @PathVariable Integer achievementId) {
-        User user = userService.getUserById(userId);
+    @PostMapping("/{id}/achievements/{achievementId}")
+    public ResponseEntity<String> grantAchievementToUser(@PathVariable Integer id, @PathVariable Integer achievementId) {
+        User user = userService.getUserById(id);
         Achievement achievement = achievementService.getAchievementById(achievementId);
         try {
             achievementService.grantAchievementToUser(user, achievement);

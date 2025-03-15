@@ -1,6 +1,7 @@
 package com.swaps.swap_cards.controller;
 
 import com.swaps.swap_cards.entity.Achievement;
+import com.swaps.swap_cards.entity.User;
 import com.swaps.swap_cards.service.AchievementService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,8 @@ public class AchievementController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Achievement> getAchievementById(@PathVariable Integer id) {
-        return ResponseEntity.ok(achievementService.getAchievementById(id));
+        Achievement achievement = achievementService.getAchievementById(id);
+        return achievement != null ? ResponseEntity.ok(achievementService.getAchievementById(id)) : ResponseEntity.notFound().build();
     }
 
 }
