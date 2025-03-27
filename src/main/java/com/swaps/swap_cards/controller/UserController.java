@@ -151,4 +151,25 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @RestController
+    @RequestMapping("/api/auth")
+    public class AuthController {
+        private final UserService userService;
+
+        public AuthController(UserService userService) {
+            this.userService = userService;
+        }
+
+        @PostMapping("/register")
+        public ResponseEntity<String> register(@RequestBody User user) {
+            try {
+                String token = userService.registerUser(user.getUserName(), user.getEmail(), user.getPassword());
+                return ResponseEntity.ok(token);
+            } catch (RuntimeException e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }
+    }
+
 }

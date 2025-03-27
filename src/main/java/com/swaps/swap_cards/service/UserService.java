@@ -3,9 +3,11 @@ package com.swaps.swap_cards.service;
 import com.swaps.swap_cards.entity.Achievement;
 import com.swaps.swap_cards.entity.SwapCard;
 import com.swaps.swap_cards.entity.User;
+import com.swaps.swap_cards.util.JwtUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,29 @@ import java.util.List;
 public class UserService {
     @PersistenceContext
     private EntityManager entityManager;
+    private final JwtUtil jwtUtil;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    public UserService(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
+    @Transactional
+    public String registerUser(String userName, String email, String password) {
+        if (entityManager.createQuery("SELECT COUNT(u) FROM User u WHERE u.email = :email", Long.class)
+                .setParameter("email", email)
+                .getSingleResult() > 0) {
+            throw new RuntimeException("Email уже используется!");
+        }
+
+        User user = new User();
+        user.setUserName(userName);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        entityManager.persist(user);
+
+        return jwtUtil.generateToken(email);
+    }
 
     @Transactional
     public User createUser(String userName, String email, String password) {
