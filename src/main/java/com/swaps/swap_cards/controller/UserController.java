@@ -27,21 +27,6 @@ public class UserController {
         this.achievementService = achievementService;
     }
 
-    @PostMapping
-    @Operation(summary = "Создать нового пользователя", description = "Создает нового пользователя и возвращает его данные.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Пользователь успешно создан"),
-            @ApiResponse(responseCode = "400", description = "Ошибка валидации данных"),
-            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
-    })
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.createUser(
-                user.getUserName(),
-                user.getEmail(),
-                user.getPassword()
-        ));
-    }
-
     @GetMapping
     @Operation(summary = "Вывести всех пользователей", description = "Возвращает список всех пользователях.")
     @ApiResponse(responseCode = "200", description = "Список пользователей успешно получен")
@@ -149,26 +134,6 @@ public class UserController {
             return ResponseEntity.ok("Достижение успешно выдано.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @RestController
-    @RequestMapping("/api/auth")
-    public class AuthController {
-        private final UserService userService;
-
-        public AuthController(UserService userService) {
-            this.userService = userService;
-        }
-
-        @PostMapping("/register")
-        public ResponseEntity<String> register(@RequestBody User user) {
-            try {
-                String token = userService.registerUser(user.getUserName(), user.getEmail(), user.getPassword());
-                return ResponseEntity.ok(token);
-            } catch (RuntimeException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
         }
     }
 

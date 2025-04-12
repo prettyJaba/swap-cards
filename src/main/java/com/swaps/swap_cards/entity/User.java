@@ -35,7 +35,5 @@ public class User implements Serializable {
     public void setUserName(String userName) { this.userName = userName; }
     public void setLinkToUserPic(String linkToUserPic) { this.linkToUserPic = linkToUserPic; }
     public void setEmail(String email) { this.email = email; }
-    public void setPassword(String rawPassword) {
-        this.password = PasswordUtil.hashPassword(rawPassword);
-    }
+    public void setPassword(String password) { this.password = password; }
 }

@@ -4,6 +4,7 @@ import com.swaps.swap_cards.entity.Achievement;
 import com.swaps.swap_cards.entity.SwapCard;
 import com.swaps.swap_cards.entity.User;
 import com.swaps.swap_cards.util.JwtUtil;
+import com.swaps.swap_cards.util.PasswordUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -34,21 +35,50 @@ public class UserService {
         User user = new User();
         user.setUserName(userName);
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(PasswordUtil.hashPassword(password));
         entityManager.persist(user);
 
         return jwtUtil.generateToken(email);
     }
 
     @Transactional
-    public User createUser(String userName, String email, String password) {
-        User user = new User();
-        user.setUserName(userName);
-        user.setEmail(email);
-        user.setPassword(password);
-        entityManager.persist(user);
-        return user;
+    public String authenticate(String email, String password) {
+        String query = "SELECT u FROM User u WHERE u.email = :email";
+        List<User> users = entityManager.createQuery(query, User.class)
+                .setParameter("email", email)
+                .getResultList();
+
+        if (users.isEmpty()) {
+            throw new RuntimeException("Пользователь с таким email не найден");
+        }
+
+        User user = users.get(0);
+
+        if (!PasswordUtil.checkPassword(password, user.getPassword())) {
+            throw new RuntimeException("Неверный пароль");
+        }
+
+        return jwtUtil.generateToken(email);
     }
+
+    @Transactional
+    public void changePassword(String email, String oldPassword, String newPassword) {
+        User user = entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                .setParameter("email", email)
+                .getSingleResult();
+
+        if (!PasswordUtil.checkPassword(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Старый пароль неверный");
+        }
+
+        if (oldPassword.equals(newPassword)) {
+            throw new RuntimeException("Новый пароль должен отличаться от старого");
+        }
+
+        user.setPassword(PasswordUtil.hashPassword(newPassword));
+        entityManager.merge(user);
+    }
+
     public List<User> getAllUsers() {
         String query = "SELECT u FROM User u";
         return entityManager.createQuery(query, User.class).getResultList();
