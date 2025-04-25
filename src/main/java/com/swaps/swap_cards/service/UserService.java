@@ -87,6 +87,12 @@ public class UserService {
     public User getUserById(Integer id) {
         return entityManager.find(User.class, id);
     }
+    public User getUserByEmail(String email) {
+        String query = "SELECT u FROM User u WHERE u.email = :email";
+        return entityManager.createQuery(query, User.class)
+                .setParameter("email", email)
+                .getSingleResult();
+    }
 
     public List<User> searchUserByName(String nameQuery) {
         String query = "SELECT u FROM User u WHERE u.userName LIKE :nameQuery";

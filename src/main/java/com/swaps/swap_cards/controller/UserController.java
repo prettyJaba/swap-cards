@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -69,35 +70,30 @@ public class UserController {
         return user != null ? ResponseEntity.ok(userService.getCardsFromUser(id)) : ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}/update-pic")
+    @PatchMapping("/update-pic")
     @Operation(summary = "Обновить аватар пользователя по его ID", description = "Обновляет аватар пользователя.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Аватар успешно обновлен"),
-            @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     public ResponseEntity<User> updateUserPic(
-            @Parameter(description = "ID пользователя", required = true) @PathVariable Integer id,
             @Parameter(description = "Ссылка на новое изображение", required = true) @RequestParam String newPic
     ) {
-        User user = userService.getUserById(id);
-        return user != null ? ResponseEntity.ok(userService.updateUserPic(id, newPic)) : ResponseEntity.notFound().build();
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByEmail(currentUserEmail);
+        return ResponseEntity.ok(userService.updateUserPic(user.getId(), newPic));
     }
 
-    @DeleteMapping("/{id}/delete-pic")
+    @DeleteMapping("/delete-pic")
     @Operation(summary = "Удалить аватар пользователя по его ID", description = "Удаляет аватар пользователя.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Аватар успешно удален"),
-            @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     public ResponseEntity<Void> deleteUserPic(
-            @Parameter(description = "ID пользователя", required = true) @PathVariable Integer id
     ) {
-        User user = userService.getUserById(id);
-        if (user != null) {
-            userService.deleteUserPic(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByEmail(currentUserEmail);
+        userService.deleteUserPic(user.getId());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/achievements")
@@ -113,7 +109,7 @@ public class UserController {
         return user != null ? ResponseEntity.ok(userService.getAchievements(id)) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{id}/achievements/{achievementId}")
+    @PostMapping("/achievements/{achievementId}")
     @Operation(summary = "Выдать достижение пользователю", description = "Проверяет условия и назначает достижение пользователю.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Достижение успешно выдано"),
@@ -121,10 +117,10 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Пользователь или достижение не найдены")
     })
     public ResponseEntity<String> grantAchievementToUser(
-            @Parameter(description = "ID пользователя", required = true) @PathVariable Integer id,
             @Parameter(description = "ID достижения", required = true) @PathVariable Integer achievementId
     ) {
-        User user = userService.getUserById(id);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByEmail(email);
         Achievement achievement = achievementService.getAchievementById(achievementId);
         if (user == null || achievement == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Пользователь или достижение не найдены.");

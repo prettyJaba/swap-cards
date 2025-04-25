@@ -1,6 +1,7 @@
 package com.swaps.swap_cards.controller;
 
 import com.swaps.swap_cards.entity.SwapCard;
+import com.swaps.swap_cards.entity.User;
 import com.swaps.swap_cards.service.SwapCardService;
 import com.swaps.swap_cards.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -17,9 +19,11 @@ import java.util.List;
 @Tag(name = "Карточки", description = "Методы для работы с карточками")
 public class SwapCardController {
     private final SwapCardService swapCardService;
+    private final UserService userService;
 
     public SwapCardController(SwapCardService swapCardService, UserService userService) {
         this.swapCardService = swapCardService;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -30,11 +34,13 @@ public class SwapCardController {
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     public ResponseEntity<SwapCard> createSwapCard(@RequestBody SwapCard swapCard) {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userService.getUserByEmail(currentUserEmail);
         return ResponseEntity.ok(swapCardService.createSwapCard(
                 swapCard.getName(),
                 swapCard.getLinkToImage(),
                 swapCard.getDescription(),
-                swapCard.getCreator()
+                currentUser
         ));
     }
 
@@ -46,11 +52,12 @@ public class SwapCardController {
     })
     public ResponseEntity<?> transferCard(
             @Parameter(description = "ID карточки, которая передается", required = true) @PathVariable Integer cardId,
-            @Parameter(description = "ID владельца карточки", required = true) @RequestParam Integer currentOwnerId,
             @Parameter(description = "ID нового владельца карточки", required = true) @RequestParam Integer newOwnerId
     ) {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentOwner = userService.getUserByEmail(currentUserEmail);
         try {
-            swapCardService.transferCard(cardId, currentOwnerId, newOwnerId);
+            swapCardService.transferCard(cardId, currentOwner.getId(), newOwnerId);
             return ResponseEntity.ok("Card transferred successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
