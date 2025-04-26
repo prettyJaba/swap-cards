@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Карточки</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+<h1>Все карточки</h1>
+
+<div th:if="${cards.isEmpty()}">
+    <p>Карточек пока нет.</p>
+</div>
+
+<div th:if="${!cards.isEmpty()}">
+    <ul>
+        <li th:each="card : ${cards}">
+            <a th:href="@{'/cards/' + ${card.id}}">
+                <img th:src="${card.linkToImage}" alt="Картинка карточки" width="100" height="100" th:if="${card.linkToImage != null}"/>
+                <span th:text="${card.name}">Название карточки</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<a href="/cards/create">
+    <button>Создать новую карточку</button>
+</a>
+
+<a href="/home">Назад на главную</a>
+
+</body>
+</html>

@@ -58,4 +58,8 @@ public class SwapCardService {
                 .setParameter("nameQuery", "%" + nameQuery + "%")
                 .getResultList();
     }
+
+    public SwapCard getCardById(Integer id) {
+        return entityManager.find(SwapCard.class, id);
+    }
 }

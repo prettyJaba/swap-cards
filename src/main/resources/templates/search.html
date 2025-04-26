@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Поиск пользователей</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+<h1>Поиск пользователей</h1>
+
+<form method="get" action="/search">
+    <input type="text" name="query" placeholder="Введите никнейм" required/>
+    <button type="submit">Найти</button>
+</form>
+
+<div th:if="${users}">
+    <h2>Результаты поиска:</h2>
+    <ul>
+        <li th:each="user : ${users}">
+            <a th:href="@{'/user/' + ${user.id}}" th:text="${user.userName}">Имя пользователя</a>
+        </li>
+    </ul>
+</div>
+
+<div th:if="${notFound}">
+    <p th:text="${notFound}" style="color: red;"></p>
+</div>
+
+<br>
+<a href="/home">На главную</a>
+
+</body>
+</html>

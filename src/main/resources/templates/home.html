@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Главная</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+<h1>Добро пожаловать, <span th:text="${user.userName}">Имя</span>!</h1>
+
+<ul>
+    <li><a th:href="@{'/user/' + ${user.id}}">Мой профиль</a></li>
+    <li><a href="/cards">Карточки</a></li>
+    <li><a href="/achievements">Достижения</a></li>
+    <li><a href="/search">Поиск пользователей</a></li>
+    <li>
+        <form method="post" action="/logout">
+            <button type="submit">Выйти</button>
+        </form>
+    </li>
+</ul>
+</body>
+</html>

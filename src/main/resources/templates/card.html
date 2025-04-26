@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Просмотр карточки</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+<div th:if="${error}" style="color: red; margin-bottom: 20px;">
+    <p th:text="${error}"></p>
+</div>
+
+<h1 th:text="${card.name}">Название карточки</h1>
+
+<div>
+    <img th:if="${card.linkToImage != null}" th:src="${card.linkToImage}" alt="Изображение карточки" width="200" height="200"/>
+</div>
+
+<p><strong>Описание:</strong> <span th:text="${card.description}">Описание карточки</span></p>
+
+<p><strong>Создатель:</strong>
+    <a th:href="@{'/user/' + ${card.creator.id}}" th:text="${card.creator.userName}">Имя создателя</a>
+</p>
+
+<p><strong>Владелец:</strong>
+    <a th:href="@{'/user/' + ${card.owner.id}}" th:text="${card.owner.userName}">Имя владельца</a>
+</p>
+
+<div th:if="${isOwner}">
+    <h3>Передать карточку другому пользователю</h3>
+    <form method="post" th:action="@{'/cards/' + ${card.id} + '/transfer'}">
+        <label>ID нового владельца:
+            <input type="number" name="newOwnerId" required/>
+        </label>
+        <br><br>
+        <button type="submit">Передать карточку</button>
+    </form>
+</div>
+
+<a href="/cards">Назад ко всем карточкам</a>
+
+</body>
+</html>
