@@ -95,7 +95,7 @@ public class AchievementService {
                 entityManager.persist(userAchievement);
             }
         } else {
-            throw new IllegalArgumentException("You have not met the conditions for the achievement");
+            throw new IllegalArgumentException("Вы еще не выполнили все условия для получения этого достижения");
         }
     }
 }

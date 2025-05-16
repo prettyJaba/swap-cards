@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <title>Профиль пользователя</title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
 </head>
 <body>
 <h1>Профиль пользователя</h1>
@@ -33,7 +33,7 @@
 <div th:if="${errorMessage}" style="color: red;">
     <p th:text="${errorMessage}"></p>
 </div>
-<!-- Кнопка для смены пароля только для текущего пользователя -->
+
 <div th:if="${isCurrentUser}">
     <h3>Сменить пароль</h3>
     <form method="post" action="/change-password">

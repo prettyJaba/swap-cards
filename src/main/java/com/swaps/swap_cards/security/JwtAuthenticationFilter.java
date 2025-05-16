@@ -26,27 +26,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+        String token = null;
+
         String authHeader = request.getHeader("Authorization");
 
-        // Если заголовка нет или он не начинается с Bearer, ищем токен в cookies
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            if (request.getCookies() != null) {
-                for (Cookie cookie : request.getCookies()) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        } else {
+            // Иначе пытаемся достать токен из cookies
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
                     if ("token".equals(cookie.getName())) {
-                        authHeader = "Bearer " + cookie.getValue();
+                        token = cookie.getValue();
                         break;
                     }
                 }
             }
         }
 
-        // Если всё ещё нет токена — продолжаем цепочку без авторизации
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        String token = authHeader.substring(7); // убираем "Bearer "
 
         if (jwtUtil.isTokenBlacklisted(token)) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Токен недействителен");
@@ -66,7 +68,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
-
 
 }

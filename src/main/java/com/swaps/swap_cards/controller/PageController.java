@@ -120,8 +120,6 @@ public class PageController {
         return "redirect:/login";
     }
 
-
-
     @GetMapping("/home")
     public String homePage(Model model) {
 
@@ -166,7 +164,6 @@ public class PageController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
 
-        // Возвращаем пользователя на его профиль
         String userId = userService.getUserByEmail(
                 SecurityContextHolder.getContext().getAuthentication().getName()
         ).getId().toString();
@@ -275,5 +272,57 @@ public class PageController {
 
         return "search";
     }
+
+    @GetMapping("/achievements")
+    public String viewAchievements(Model model,
+                                   @CookieValue(value = "token", required = false) String token) {
+        if (token == null || !jwtUtil.validateToken(token)) {
+            return "redirect:/login";
+        }
+
+        String email = jwtUtil.extractEmail(token);
+        User user = userService.getUserByEmail(email);
+
+        List<Achievement> all = achievementService.getAllAchievements();
+        List<Achievement> userAchievements = achievementService.getAchievementsForUser(user.getId());
+
+        // ID всех полученных достижений
+        List<Integer> userAchievementsIds = userAchievements.stream()
+                .map(Achievement::getId)
+                .toList();
+
+        model.addAttribute("allAchievements", all);
+        model.addAttribute("userAchievementsIds", userAchievementsIds);
+
+        return "achievements";
+    }
+
+    @PostMapping("/achievements/{id}/grant")
+    public String grantAchievement(@PathVariable("id") Integer achievementId,
+                                   @CookieValue(value = "token", required = false) String token,
+                                   RedirectAttributes redirectAttributes) {
+        if (token == null || !jwtUtil.validateToken(token)) {
+            return "redirect:/login";
+        }
+
+        String email = jwtUtil.extractEmail(token);
+        User user = userService.getUserByEmail(email);
+        Achievement achievement = achievementService.getAchievementById(achievementId);
+
+        if (achievement == null) {
+            redirectAttributes.addFlashAttribute("error", "Достижение не найдено.");
+            return "redirect:/achievements";
+        }
+
+        try {
+            achievementService.grantAchievementToUser(user, achievement);
+            redirectAttributes.addFlashAttribute("success", "Достижение успешно получено!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/achievements";
+    }
+
 }
 
