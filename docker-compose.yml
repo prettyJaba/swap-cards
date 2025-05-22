@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13.3
+    container_name: swapcards-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: swapcards
+      POSTGRES_USER: jaba
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: swapcards-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/swapcards
+      SPRING_DATASOURCE_USERNAME: jaba
+      SPRING_DATASOURCE_PASSWORD: 12345
+      JWT_SECRET: 9FwzDkl5NlzpasG2gIf3tJor4vpy3Gnvb6q7UPlieQS2f+e32RoJTuZQNG1CoRY23omSO0mjjkrUKZYb5zMalg==
+
+volumes:
+  pgdata:
+    external: true
+    name: 6ee18d7282a6d35a0dc84deb5f1722b3a7113b2336a36bff9506825970112c2f
