@@ -6,29 +6,28 @@
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-
-<h1>Все карточки</h1>
-
-<div th:if="${cards.isEmpty()}">
-    <p>Карточек пока нет.</p>
+<a href="/home" class="back-link">← Назад на главную</a>
+<div class="container">
+    <h1 class="page-title">Все карточки</h1>
+    <div th:if="${cards.isEmpty()}">
+        <p>Карточек пока нет.</p>
+    </div>
+    <div th:if="${!cards.isEmpty()}">
+        <div class="grid-cards">
+            <div th:each="card : ${cards}">
+                <a th:href="@{'/cards/' + ${card.id}}">
+                    <img th:if="${card.linkToImage != null}"
+                         th:src="${card.linkToImage}"
+                         alt="Картинка карточки"
+                         width="100" height="100"/>
+                    <div th:text="${card.name}">Название карточки</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="actions" style="margin-top:20px;">
+        <a href="/cards/create" class="btn">Создать новую карточку</a>
+    </div>
 </div>
-
-<div th:if="${!cards.isEmpty()}">
-    <ul>
-        <li th:each="card : ${cards}">
-            <a th:href="@{'/cards/' + ${card.id}}">
-                <img th:src="${card.linkToImage}" alt="Картинка карточки" width="100" height="100" th:if="${card.linkToImage != null}"/>
-                <span th:text="${card.name}">Название карточки</span>
-            </a>
-        </li>
-    </ul>
-</div>
-
-<a href="/cards/create">
-    <button>Создать новую карточку</button>
-</a>
-
-<a href="/home">Назад на главную</a>
-
 </body>
 </html>

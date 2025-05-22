@@ -5,45 +5,55 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css" />
 </head>
 <body>
-<h1>Профиль пользователя</h1>
+<a href="/home" class="back-link">← Назад на главную</a>
+<div class="container">
+    <div class="profile-header">
+        <img th:src="${user.linkToUserPic}" alt="Аватар" class="profile-avatar"/>
+        <div class="profile-username" th:text="${user.userName}">Имя пользователя</div>
+        <div class="profile-change-password" th:if="${isCurrentUser}">
+            <h3>Сменить пароль</h3>
+            <form method="post" action="/change-password">
+                <div class="form-group">
+                    <label>Старый пароль:
+                        <input type="password" name="oldPassword"/>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Новый пароль:
+                        <input type="password" name="newPassword"/>
+                    </label>
+                </div>
+                <button type="submit" class="btn">Сменить пароль</button>
+            </form>
+        </div>
+    </div>
 
-<div>
-    <h2 th:text="${user.userName}">Имя пользователя</h2>
-    <img th:src="${user.linkToUserPic}" alt="Аватар" width="150" height="150" />
+    <div class="profile-achievements">
+        <h3>Достижения</h3>
+        <div class="grid-achievements">
+            <div th:each="achievement : ${achievements}">
+                <img th:if="${achievement.linkToIcon!=null}"
+                     th:src="${achievement.linkToIcon}"
+                     alt="Иконка" width="50" height="50"/>
+                <div th:text="${achievement.title}">Название достижения</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cards-container">
+        <h3>Карточки</h3>
+        <div class="grid-cards">
+            <div th:each="card : ${cards}">
+                <a th:href="@{'/cards/' + ${card.id}}">
+                    <img th:if="${card.linkToImage!=null}"
+                         th:src="${card.linkToImage}"
+                         alt=""
+                         width="100" height="100"/>
+                    <div th:text="${card.name}">Название карточки</div>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
-
-<h3>Карточки пользователя</h3>
-<ul>
-    <li th:each="card : ${cards}">
-        <a th:href="@{'/cards/' + ${card.id}}" th:text="${card.name}">Название карточки</a>
-    </li>
-</ul>
-
-<h3>Достижения пользователя</h3>
-<ul>
-    <li th:each="achievement : ${achievements}">
-        <span th:text="${achievement.title}">Название достижения</span>
-    </li>
-</ul>
-
-<div th:if="${successMessage}" style="color: green;">
-    <p th:text="${successMessage}"></p>
-</div>
-
-<div th:if="${errorMessage}" style="color: red;">
-    <p th:text="${errorMessage}"></p>
-</div>
-
-<div th:if="${isCurrentUser}">
-    <h3>Сменить пароль</h3>
-    <form method="post" action="/change-password">
-        <label>Старый пароль: <input type="password" name="oldPassword"/></label><br>
-        <label>Новый пароль: <input type="password" name="newPassword"/></label><br>
-        <button type="submit">Сменить пароль</button>
-    </form>
-</div>
-
-
-<a href="/home">← Назад на главную</a>
 </body>
 </html>

@@ -6,26 +6,27 @@
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-
-<h1>Создание новой карточки</h1>
-
-<form method="post" action="/cards/create">
-    <label>Название карточки:
-        <input type="text" name="name" required/>
-    </label><br><br>
-
-    <label>Описание карточки:
-        <textarea name="description" required></textarea>
-    </label><br><br>
-
-    <label>Ссылка на изображение (необязательно):
-        <input type="text" name="linkToImage"/>
-    </label><br><br>
-
-    <button type="submit">Создать</button>
-</form>
-
-<a href="/cards">Назад ко всем карточкам</a>
-
+<a href="/cards" class="back-link">← Назад ко всем карточкам</a>
+<div class="container content-center">
+    <h1>Создание новой карточки</h1>
+    <form method="post" action="/cards/create">
+        <div class="form-group">
+            <label>Название карточки:
+                <input type="text" name="name" required/>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Описание карточки:
+                <textarea name="description" required></textarea>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Ссылка на изображение (необязательно):
+                <input type="text" name="linkToImage"/>
+            </label>
+        </div>
+        <button type="submit" class="btn">Создать</button>
+    </form>
+</div>
 </body>
 </html>

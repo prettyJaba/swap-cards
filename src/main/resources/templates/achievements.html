@@ -5,34 +5,30 @@
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-
-<h1>Достижения</h1>
-
-<div th:if="${success}" style="color: green;">
-    <p th:text="${success}"></p>
-</div>
-
-<div th:if="${error}" style="color: red;">
-    <p th:text="${error}"></p>
-</div>
-
-<div th:each="achievement : ${allAchievements}">
-    <div style="border: 1px solid black; padding: 10px; margin-bottom: 10px;">
-        <h3 th:text="${achievement.title}">Название</h3>
-        <p th:text="${achievement.description}">Описание</p>
-        <img th:src="${achievement.linkToIcon}" alt="Иконка" width="100px"/>
-
-        <p th:if="${userAchievementsIds.contains(achievement.id)}" style="color: green;">Получено ✅</p>
-
-        <form th:if="${!userAchievementsIds.contains(achievement.id)}"
-              method="post"
-              th:action="@{'/achievements/' + ${achievement.id} + '/grant'}">
-            <button type="submit">Получить</button>
-        </form>
+<a href="/home" class="back-link">← На главную</a>
+<div class="container">
+    <header class="page-title">
+        <h1>Достижения</h1>
+    </header>
+    <div th:if="${success}" style="color: green; margin-bottom: 10px;">
+        <p th:text="${success}"></p>
+    </div>
+    <div th:if="${error}" style="color: red; margin-bottom: 10px;">
+        <p th:text="${error}"></p>
+    </div>
+    <div class="grid-achievements">
+        <div th:each="achievement : ${allAchievements}">
+            <h3 th:text="${achievement.title}">Название</h3>
+            <img th:src="${achievement.linkToIcon}" alt="Иконка" width="100px"/>
+            <p th:text="${achievement.description}">Описание</p>
+            <p th:if="${userAchievementsIds.contains(achievement.id)}">Получено &#9989</p>
+            <form th:if="${!userAchievementsIds.contains(achievement.id)}"
+                  method="post"
+                  th:action="@{'/achievements/' + ${achievement.id} + '/grant'}">
+                <button type="submit" class="btn">Получить</button>
+            </form>
+        </div>
     </div>
 </div>
-
-<a href="/home">На главную</a>
-
 </body>
 </html>

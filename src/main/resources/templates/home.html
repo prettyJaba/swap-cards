@@ -5,18 +5,21 @@
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-<h1>Добро пожаловать, <span th:text="${user.userName}">Имя</span>!</h1>
-
-<ul>
-    <li><a th:href="@{'/user/' + ${user.id}}">Мой профиль</a></li>
-    <li><a href="/cards">Карточки</a></li>
-    <li><a href="/achievements">Достижения</a></li>
-    <li><a href="/search">Поиск пользователей</a></li>
-    <li>
-        <form method="post" action="/logout">
-            <button type="submit">Выйти</button>
-        </form>
-    </li>
-</ul>
+<div class="container">
+    <header class="page-title">
+        <h1>Добро пожаловать, <span th:text="${user.userName}">Имя</span>!</h1>
+    </header>
+    <ul class="content-center">
+        <li class="profile-icon"><a th:href="@{'/user/' + ${user.id}}" class="btn">Мой профиль</a></li>
+        <li class="card-icon"><a href="/cards" class="btn">Карточки</a></li>
+        <li class="achieve-icon"><a href="/achievements" class="btn">Достижения</a></li>
+        <li class="find-icon"><a href="/search" class="btn">Поиск пользователей</a></li>
+        <li class="logout-icon">
+            <form method="post" action="/logout">
+                <button type="submit" class="btn">Выйти</button>
+            </form>
+        </li>
+    </ul>
+</div>
 </body>
 </html>
